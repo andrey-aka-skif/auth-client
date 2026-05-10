@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    // Базовое окружение
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "jsx": "preserve",
+    "types": ["vite/client"],
+
+    // Работа с JS
+    "allowJs": true,
+    "checkJs": false,
+
+    "paths": {
+      "@/*": ["./src/*"],
+      "@config/*": ["./src/shared/config/*"]
+    },
+
+    // Облегченный режим (без строгих проверок)
+    "strict": false,
+    "skipLibCheck": true,
+    "noEmit": true
+  },
+
+  "include": ["src/**/*"],
+
+  "exclude": ["node_modules", "dist"]
+}
