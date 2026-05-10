@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { TEXTS } from '@/shared/config'
 import routes from './routes'
-import { useAuthStore } from '@/stores/auth'
+import { useAuthStore } from '@/modules/auth/model/authStore'
 
 const pickRoutesFromModules = () => {
   const modulesWithRoutes = import.meta.glob('@/modules/**/index.js', {

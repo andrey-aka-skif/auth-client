@@ -1,19 +1,9 @@
 <script setup>
-import { useAuth } from '../../../composables/useAuth'
-
-const { logout } = useAuth()
+import { logout } from '@/modules/auth/model/authService'
 
 const onLogout = async () => {
   await logout()
 }
-
-// import { AuthApiApi } from '../api-client/api'
-
-// const apiInstance = new AuthApiApi()
-
-// const {status,data} = await apiInstance.apiContentGet()
-
-// console.log(status,data);
 </script>
 
 <template>

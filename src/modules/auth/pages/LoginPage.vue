@@ -1,22 +1,13 @@
 <script setup>
-import { onMounted, ref } from 'vue'
-import { useAuth } from '../../../composables/useAuth'
-import { getApiContent } from '@/shared/api/generated'
-
-const { login } = useAuth()
+import { ref } from 'vue'
+import { login } from '../model/authService'
 
 const email = ref('admin@test.com')
 const password = ref('password123')
 
 const onSubmit = async () => {
-  await login(email.value, password.value)
+  await login({ email: email.value, password: password.value })
 }
-
-onMounted(async () => {
-  const { status, data } = await getApiContent()
-  // eslint-disable-next-line
-  console.log(status, data)
-})
 </script>
 
 <template>

@@ -1,7 +1,12 @@
+import { tokenStorage } from '@/shared/lib/auth/tokenStorage'
 import axios from 'axios'
-import { useAuthStore } from '@/stores/auth'
 
 const axiosInstance = axios.create({ baseURL: import.meta.env.VITE_API_URL })
+const axiosRefreshInstance = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+})
+
+const refreshUri = import.meta.env.VITE_REFRESH_URI || '/auth/refresh'
 
 let isRefreshing = false
 let failedQueue = []
@@ -14,14 +19,11 @@ const processQueue = (error, token = null) => {
 }
 
 axiosInstance.interceptors.request.use(config => {
-  // const token = sessionManager.getAccessToken()
+  const token = tokenStorage.getAccessToken()
 
-  // if (token) {
-  //   config.headers.Authorization = `Bearer ${token}`
-  // }
-
-  const { accessToken } = useAuthStore()
-  if (accessToken) config.headers.Authorization = `Bearer ${accessToken}`
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
 
   return config
 })
@@ -44,17 +46,17 @@ axiosInstance.interceptors.response.use(
       isRefreshing = true
 
       try {
-        const store = useAuthStore()
-        const { data } = await axios.post('/auth/refresh', {
-          refreshToken: store.refreshToken,
+        const refreshToken = tokenStorage.getRefreshToken()
+        const { data } = await axiosRefreshInstance.post(refreshUri, {
+          refreshToken,
         })
-        store.setTokens(data.accessToken, data.refreshToken)
+        tokenStorage.setTokens(data)
         processQueue(null, data.accessToken)
+        originalRequest.headers.Authorization = `Bearer ${data.accessToken}`
         return axiosInstance(originalRequest)
       } catch (refreshError) {
         processQueue(refreshError, null)
-        // store.clear()
-        window.location.href = '/login' // или router.push
+        tokenStorage.clear()
         return Promise.reject(refreshError)
       } finally {
         isRefreshing = false
