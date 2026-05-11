@@ -3,13 +3,27 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './app/router'
 import './shared/api/transport/setup'
-import { initSession } from './modules/auth/model/initSession'
 
 import './assets/main.css'
 
-const pinia = createPinia()
+import { initializeAuth } from './modules/auth/model/authService'
+import { injectUnauthorizedHandler } from './shared/lib/auth/authInjector'
+import { useAuthStore } from './modules/auth/model/authStore'
+
 const app = createApp(App)
+const pinia = createPinia()
 
-app.use(router).use(pinia).mount('#app')
+app.use(pinia)
 
-initSession()
+injectUnauthorizedHandler(() => {
+  const authStore = useAuthStore()
+
+  authStore.clear()
+
+  router.push({ name: 'login' })
+})
+
+await initializeAuth()
+
+app.use(router)
+app.mount('#app')

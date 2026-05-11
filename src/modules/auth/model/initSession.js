@@ -1,22 +1,27 @@
 import { useAuthStore } from './authStore'
+
 import { tokenStorage } from '@/shared/lib/auth/tokenStorage'
+
+import { authApi } from '../api/authApi'
 
 export async function initSession() {
   const store = useAuthStore()
 
-  const accessToken = tokenStorage.getAccessToken()
-  const refreshToken = tokenStorage.getRefreshToken()
+  try {
+    const refreshToken = tokenStorage.getRefreshToken()
 
-  if (!accessToken || !refreshToken) {
-    store.initialized = true
-    return
+    if (!refreshToken) {
+      return
+    }
+
+    const response = await authApi.me()
+
+    store.setUser(response.data)
+  } catch {
+    tokenStorage.clear()
+
+    store.clear()
+  } finally {
+    store.setInitialized(true)
   }
-
-  store.setSession({
-    accessToken,
-    refreshToken,
-    user: null,
-  })
-
-  store.initialized = true
 }

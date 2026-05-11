@@ -1,5 +1,6 @@
-import { tokenStorage } from '@/shared/lib/auth/tokenStorage'
 import axios from 'axios'
+import { tokenStorage } from '@/shared/lib/auth/tokenStorage'
+import { handleUnauthorized } from '@/shared/lib/auth/authInjector'
 
 const axiosInstance = axios.create({ baseURL: import.meta.env.VITE_API_URL })
 const axiosRefreshInstance = axios.create({
@@ -57,6 +58,7 @@ axiosInstance.interceptors.response.use(
       } catch (refreshError) {
         processQueue(refreshError, null)
         tokenStorage.clear()
+        handleUnauthorized()
         return Promise.reject(refreshError)
       } finally {
         isRefreshing = false

@@ -1,9 +1,11 @@
 import {
-  postApiAuthLogin as login,
-  postApiAuthLogout as logout,
+  postApiAuthLogin,
+  postApiAuthLogout,
+  getApiAuthMe,
 } from '@/shared/api/generated'
 
 export const authApi = {
-  login,
-  logout,
+  login: postApiAuthLogin,
+  logout: postApiAuthLogout,
+  me: getApiAuthMe,
 }

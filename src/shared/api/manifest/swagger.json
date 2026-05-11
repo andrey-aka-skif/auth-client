@@ -65,6 +65,16 @@
         }
       }
     },
+    "/api/auth/me": {
+      "get": {
+        "tags": ["AuthApi"],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/protected": {
       "get": {
         "tags": ["AuthApi"],

@@ -10,28 +10,54 @@ export async function login(credentials) {
     body: credentials,
   })
 
-  const session = response.data
-  tokenStorage.setTokens(session)
+  tokenStorage.setTokens(response.data)
 
-  store.setSession(session)
+  const me = await authApi.me()
 
-  router.push({ name: 'dashboard' })
+  store.setUser(me.data)
 
   return response.data
 }
 
 export async function logout() {
+  const refreshToken = tokenStorage.getRefreshToken()
+
   const store = useAuthStore()
 
   try {
-    await authApi.logout({
-      body: {
-        refreshToken: store.refreshToken,
-      },
-    })
+    if (refreshToken) {
+      await authApi.logout({
+        body: {
+          refreshToken,
+        },
+      })
+    }
   } finally {
     tokenStorage.clear()
+
     store.clear()
+
     router.push({ name: 'login' })
+  }
+}
+
+export async function initializeAuth() {
+  const store = useAuthStore()
+
+  try {
+    const accessToken = tokenStorage.getAccessToken()
+
+    if (!accessToken) {
+      return
+    }
+
+    const response = await authApi.me()
+
+    store.setUser(response.data)
+  } catch {
+    tokenStorage.clear()
+    store.clear()
+  } finally {
+    store.setInitialized(true)
   }
 }

@@ -2,50 +2,31 @@ import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 
 export const useAuthStore = defineStore('auth', () => {
-  const accessToken = ref(null)
-  const refreshToken = ref(null)
-
   const user = ref(null)
 
   const initialized = ref(false)
 
-  const isAuthenticated = computed(() => !!accessToken.value)
+  const isAuthenticated = computed(() => !!user.value)
 
-  function setSession(session) {
-    accessToken.value = session.accessToken
-    refreshToken.value = session.refreshToken
-    user.value = session.user
+  function setUser(value) {
+    user.value = value
   }
 
   function clear() {
-    setSession({
-      accessToken: null,
-      refreshToken: null,
-      user: null,
-    })
+    user.value = null
   }
 
   function setInitialized(value) {
     initialized.value = value
   }
 
-  function setUser(value) {
-    user.value = value
-  }
-
   return {
-    accessToken,
-    refreshToken,
-
     user,
-
     initialized,
-
     isAuthenticated,
 
-    setSession,
+    setUser,
     clear,
     setInitialized,
-    setUser,
   }
 })

@@ -1,12 +1,14 @@
 <script setup>
 import { ref } from 'vue'
 import { login } from '../model/authService'
+import router from '@/app/router'
 
 const email = ref('admin@test.com')
 const password = ref('password123')
 
 const onSubmit = async () => {
   await login({ email: email.value, password: password.value })
+  router.push({ name: 'dashboard' })
 }
 </script>
 
