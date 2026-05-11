@@ -1,1 +1,1 @@
-# blank-vue-3-project-with-vuerouter-with-vite
+# учебный проект для ичучения jwt аутентификации во Vue приложении
